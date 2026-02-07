@@ -7,7 +7,7 @@
 ### https, http
 --filter-tcp=443,80 --filter-l7=http,tls <HOSTLIST>
 --payload=tls_client_hello
---lua-desync=fake:blob=fake_default_tls:tls_mod=rnd,dupsid,sni=www.ozon.ru:tcp_seq=10000
+--lua-desync=fake:blob=fake_default_tls:tls_mod=rnd,dupsid,sni=yandex.net:tcp_seq=10000
 --lua-desync=multidisorder:pos=1,midsld:seqovl=1:seqovl_pattern=tls_max:tcp_ack=-66000:tcp_ts_up
 --payload=http_req
 --lua-desync=http_methodeol:badsum
