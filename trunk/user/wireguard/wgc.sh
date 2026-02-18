@@ -57,12 +57,11 @@ log()
 {
     [ -n "$*" ] || return
     echo "$@"
-    [ -n "$(nvram get wg_silence_restart_t)" ] || logger -t $MODULE "$@"
+    logger -t $MODULE "$@"
 }
 
 error()
 {
-    nvram unset wg_silence_restart_t
     [ -n "$*" ] && log "error: $@" >&2
     stop_wg
     exit 1
@@ -127,7 +126,7 @@ setconf_wg()
         awg="$(cps)"
     fi
 
-    timeout 15 2>&1 nslookup $PEER_ENDPOINT >/dev/null 2>&1
+    timeout 30 2>&1 nslookup $PEER_ENDPOINT >/dev/null 2>&1
     if [ $? -ne 0 ]; then
         error "not found host $PEER_ENDPOINT"
     fi
@@ -254,16 +253,17 @@ log_unable_connect()
     set_state 0
     [ -n "$(nvram get wg_try_connect_t)" ] && return
     log "unable connect to $PEER_ENDPOINT"
+
+    # prevent multiple messages
     nvram settmp wg_try_connect_t=1
 }
 
 log_success_connect()
 {
     [ "$(get_state)" = "1" ] && return
-    nvram unset wg_try_connect_t
-    nvram unset wg_silence_restart_t
     log "successfully connected"
     set_state 1
+    nvram unset wg_try_connect_t
 }
 
 connect_wg()
@@ -303,8 +303,8 @@ check_connected()
     local now=$(date +%s)
 
     if [ -n "$lh_success" ] && [ "$(( now -  $lh_success ))" -gt 300 ]; then
-        log "unable to connect for more than 5 minutes, emergency silent restart"
-        silence_restart_wg
+        log "unable to connect for more than 5 minutes, emergency restart"
+        nvram settmp wg_need_restart_t=1
         exit
     fi
 
@@ -333,20 +333,19 @@ check_connection_status()
     return 1
 }
 
-silence_restart_wg()
-{
-    nvram settmp wg_silence_restart_t=1
-    stop_wg
-    start_wg
-    nvram unset wg_silence_restart_t
-}
-
 start_wg()
 {
     is_started && die "already started"
 
     (
-        flock -x 200 || exit 1
+        flock -n 200 || exit 1
+
+        if [ "$(nvram get link_internet)" = 1 ]; then
+            nvram unset wg_need_restart_t
+        else
+            nvram settmp wg_need_restart_t=1
+            exit 1
+        fi
 
         nvram settmp wg_latest_handshakes_t=$(date +%s)
         nvram unset wg_try_connect_t
@@ -362,11 +361,16 @@ start_wg()
         call_post_script start
 
     ) 200>$LOCK_WATCHDOG
-
 }
 
 watchdog()
 {
+    if [ -n "$(nvram get wg_need_restart_t)" ]; then
+        stop_wg
+        start_wg
+        exit
+    fi
+
     is_started || return
 
     (
@@ -413,6 +417,7 @@ stop_wg()
     rm -f "$LOCK_WATCHDOG"
 
     call_post_script stop
+    nvram unset wg_need_restart_t
 }
 
 call_post_script()
