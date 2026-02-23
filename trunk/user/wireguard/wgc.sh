@@ -569,8 +569,8 @@ stop_fw()
     ipt_remove_rule(){ while iptables -t $1 -C $2 2>/dev/null; do iptables -t $1 -D $2; done }
     ipt_remove_chain(){ iptables -t $1 -F $2 2>/dev/null && iptables -t $1 -X $2 2>/dev/null; }
 
-    ipt_remove_rule "mangle" "PREROUTING ! -i $IF_NAME -s $(nvram get lan_ipaddr)/$(nvram get lan_netmask) -j vpnc_wireguard"
-    ipt_remove_rule "mangle" "PREROUTING ! -i $IF_NAME -s $(nvram get vpns_vnet)/24 -j vpnc_wireguard"
+    ipt_remove_rule "mangle" "PREROUTING -s $(nvram get lan_ipaddr)/$(nvram get lan_netmask) -j vpnc_wireguard"
+    ipt_remove_rule "mangle" "PREROUTING -s $(nvram get vpns_vnet)/24 -j vpnc_wireguard"
 
     ipt_remove_chain "mangle" "vpnc_wireguard"
     ipt_remove_chain "mangle" "vpnc_wireguard_remote"
@@ -587,8 +587,8 @@ start_fw()
 :vpnc_wireguard - [0:0]
 :vpnc_wireguard_remote - [0:0]
 :vpnc_wireguard_mark - [0:0]
--A PREROUTING ! -i $IF_NAME -s $(nvram get lan_ipaddr)/$(nvram get lan_netmask) -j vpnc_wireguard
--A PREROUTING ! -i $IF_NAME -s $(nvram get vpns_vnet)/24 -j vpnc_wireguard
+-A PREROUTING -s $(nvram get lan_ipaddr)/$(nvram get lan_netmask) -j vpnc_wireguard
+-A PREROUTING -s $(nvram get vpns_vnet)/24 -j vpnc_wireguard
 -A vpnc_wireguard -p udp --dport 53 -j RETURN
 -A vpnc_wireguard -p tcp --dport 53 -j RETURN
 -A vpnc_wireguard -p udp --dport 123 -j RETURN
@@ -604,7 +604,7 @@ EOF
 
 case $1 in
     start)
-        start_wg || exit 1
+        start_wg
     ;;
 
     stop)
@@ -613,7 +613,7 @@ case $1 in
 
     restart)
         stop_wg
-        start_wg || exit 1
+        start_wg
     ;;
 
     update)
