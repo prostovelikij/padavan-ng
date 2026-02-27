@@ -17,6 +17,7 @@ download_test:
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
 		tar xjf $(SRC_NAME).tar.bz2; \
+		cat patches/*.patch | patch -d $(SRC_NAME) -r - -N -p1; \
 	fi )
 
 config_test:
