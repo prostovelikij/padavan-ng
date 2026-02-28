@@ -2,6 +2,7 @@ SRC_NAME=strongswan-5.9.14
 SRC_URL=https://download.strongswan.org/$(SRC_NAME).tar.bz2
 
 CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += $(if $(CONFIG_IPV6),-DCONFIG_IPV6,)
 LDFLAGS += -Wl,--gc-sections,-L$(STAGEDIR)/lib,-rpath-link=../../src/libtls/.libs -lcrypto
 
 all: download_test extract_test config_test
