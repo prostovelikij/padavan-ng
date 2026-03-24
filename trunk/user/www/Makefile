@@ -144,6 +144,18 @@ ifneq ($(STORAGE_ENABLED),y)
 	rm -rf $(INSTALLDIR)/www/images/AiDisk
 	rm -rf $(INSTALLDIR)/www/images/Tree
 endif
+ifneq ($(CONFIG_FIRMWARE_INCLUDE_DNSCRYPT),y)
+	rm -f $(INSTALLDIR)/www/Advanced_Services_DNSCrypt.asp
+endif
+ifneq ($(CONFIG_FIRMWARE_INCLUDE_DOH),y)
+	rm -f $(INSTALLDIR)/www/Advanced_Services_DoH.asp
+endif
+ifneq ($(CONFIG_FIRMWARE_INCLUDE_STUBBY),y)
+	rm -f $(INSTALLDIR)/www/Advanced_Services_DoT.asp
+endif
+ifeq (,$(filter y,$(CONFIG_FIRMWARE_INCLUDE_TOR) $(CONFIG_FIRMWARE_INCLUDE_PRIVOXY)))
+	rm -f $(INSTALLDIR)/www/Advanced_Services_Proxy.asp
+endif
 
 clean:
 	@echo "Clean www romfs"
