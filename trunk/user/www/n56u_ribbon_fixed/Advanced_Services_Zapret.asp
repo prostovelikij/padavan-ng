@@ -306,7 +306,7 @@ function zapret_strategy_change(o, v) {
                                             <tr>
                                                 <td id="zapret.strategy" colspan="2" style="padding-top: 0px; border-top: 0 none">
                                                     <div>
-                                                        <textarea rows="20" spellcheck="false" maxlength="4096" class="span12 strategy" id="zapretc.strategy" name="zapretc.strategy"><% nvram_dump("zapretc.strategy",""); %>></textarea>
+                                                        <textarea rows="20" spellcheck="false" maxlength="4096" class="span12 strategy" id="zapretc.strategy" name="zapretc.strategy"><% nvram_dump("zapretc.strategy",""); %></textarea>
                                                         <textarea rows="20" spellcheck="false" maxlength="4096" class="span12 strategy" id="zapretc.strategy0" name="zapretc.strategy0"><% nvram_dump("zapretc.strategy0",""); %></textarea>
                                                         <textarea rows="20" spellcheck="false" maxlength="4096" class="span12 strategy" id="zapretc.strategy1" name="zapretc.strategy1"><% nvram_dump("zapretc.strategy1",""); %></textarea>
                                                         <textarea rows="20" spellcheck="false" maxlength="4096" class="span12 strategy" id="zapretc.strategy2" name="zapretc.strategy2"><% nvram_dump("zapretc.strategy2",""); %></textarea>
