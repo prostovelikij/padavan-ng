@@ -291,7 +291,6 @@ function change_privoxy_enabled(){
                                             <td colspan="2" style="padding: 0; border: 0;">
                                                 <table height="100%" width="100%" cellpadding="0" cellspacing="0" class="table" style="border: 0px; margin: 0px;">
                                                     <tr>
-                                                    <tr>
                                                         <th width="50%"><#Adm_Svc_TorTransparent#>:</th>
                                                         <td>
                                                             <select name="tor_proxy_mode" class="input" onchange="tor_proxy_change();" style="width: 320px;">
