@@ -1766,7 +1766,7 @@ update_resolvconf(int is_first_run, int do_not_notify)
 
 	/* notify dnsmasq */
 	if (resolv_changed && !do_not_notify)
-		notify_rc("restart_dns");
+		notify_rc(RCN_RESTART_DNS);
 
 	return 0;
 }
