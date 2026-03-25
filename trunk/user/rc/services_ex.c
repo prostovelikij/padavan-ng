@@ -421,17 +421,50 @@ start_dns_dhcpd(int is_ap_mode)
 		{
 			fprintf(fp, "no-resolv\n");
 
-			// Use time server update bypassing DoT/DoH
+			// use the provider's first dns address for ntp, bypassing DoT/DoH/DNSCrypt
+			// or first static dns address
+			char word[256], *next, *wan_dns, *dns_name = {0};
+			int dns_static = get_wan_dns_static();
+
+			if (dns_static) {
+				char dns_name_x[16];
+
+				for (int i = 1; i <= 3; i++) {
+					sprintf(dns_name_x, "wan_dns%d_x", i);
+					wan_dns = nvram_safe_get(dns_name_x);
+					if (is_valid_ipv4(wan_dns)) {
+						dns_name = wan_dns;
+						break;
+					}
+				}
+			} else {
+				wan_dns = get_wan_unit_value(0, "dns");
+
+				if (strlen(wan_dns) < 7)
+					wan_dns = nvram_safe_get("wanx_dns");
+
+				foreach(word, wan_dns, next) {
+					if (is_valid_ipv4(word)) {
+						dns_name = word;
+						break;
+					}
+				}
+			}
+
+			// fallback dns
+			if (!is_valid_ipv4(dns_name))
+				dns_name = "8.8.8.8";
+
 			srv_addr[0] = nvram_safe_get("ntp_server0");
 			srv_addr[1] = nvram_safe_get("ntp_server1");
 
 			if (strlen(srv_addr[0]) > 2)
 			{
-				fprintf(fp, "server=/%s/77.88.8.8\n", srv_addr[0]);
+				fprintf(fp, "server=/%s/%s\n", srv_addr[0], dns_name);
 			}
 			if (strlen(srv_addr[1]) > 2)
 			{
-				fprintf(fp, "server=/%s/8.8.8.8\n", srv_addr[1]);
+				fprintf(fp, "server=/%s/%s\n", srv_addr[1], dns_name);
 			}
 		}
 
