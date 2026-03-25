@@ -11,10 +11,8 @@
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/main.css">
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/engage.itoggle.css">
-<link rel="stylesheet" type="text/css" href="/jquery.multiSelectDropdown.css">
 
 <script type="text/javascript" src="/jquery.js"></script>
-<script type="text/javascript" src="/jquery.multiSelectDropdown.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/engage.itoggle.min.js"></script>
 <script type="text/javascript" src="/state.js"></script>
