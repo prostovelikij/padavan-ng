@@ -79,6 +79,27 @@
 #define DIR_RC_NOTIFY			"/tmp/rc_notification"
 #define DIR_RC_INCOMPLETE		"/tmp/rc_action_incomplete"
 
+#ifndef NAME_MAX
+#define NAME_MAX			255
+#endif
+
+#define MAX_MARKERS			16
+#define MAX_COVERS			16
+
+typedef struct {
+        const char *name;
+        const char *covers[MAX_COVERS];
+} marker_rule_t;
+
+/*
+ * Table of overlap actions
+ * "strong" marker -> which "weak" ones does it overlap
+ */
+static const marker_rule_t marker_rules[] = {
+	{ RCN_RESTART_DHCPD, { RCN_RESTART_DNS, NULL } },
+	{ NULL, { NULL } }
+};
+
 extern void notify_rc(const char *event_name);
 extern void notify_rc_and_wait(const char *event_name, int wait_sec);
 
