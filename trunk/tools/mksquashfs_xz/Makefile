@@ -58,6 +58,8 @@ clean:
 	if [ -f $(SRC_NAME2)/Makefile ] ; then \
 		make -C $(SRC_NAME2) distclean ; \
 	fi
-	make -C $(SRC_NAME1) clean
+	if [ -f $(SRC_NAME1)/Makefile ] ; then \
+		make -C $(SRC_NAME1) clean ; \
+	fi
 	rm -f config_xz_done
 	rm -f mksquashfs
