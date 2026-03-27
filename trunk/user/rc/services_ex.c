@@ -320,12 +320,9 @@ start_dns_dhcpd(int is_ap_mode)
 
 #if defined (USE_IPV6)
 		if (nvram_get_int("dns_ipv4_priority") == 1) {
-			if ((fp = fopen("/etc/gai.conf", "w"))) {
-				fprintf(fp, "precedence %s\n", "::ffff:0:0/96 100");
-				fclose(fp);
-			}
+			set_libc_gai(1);
 		} else
-			unlink("/etc/gai.conf");
+			set_libc_gai((get_ipv6_type() == IPV6_DISABLED) ? 1 : 0);
 #endif
 	}
 
