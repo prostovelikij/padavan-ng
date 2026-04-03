@@ -42,7 +42,7 @@ MODULE_LICENSE("GPL");
 MODULE_ALIAS("ipt_recent");
 MODULE_ALIAS("ip6t_recent");
 
-static unsigned int ip_list_tot = 100;
+static unsigned int ip_list_tot = 1000;
 static unsigned int ip_pkt_list_tot = 20;
 static unsigned int ip_list_hash_size = 0;
 static unsigned int ip_list_perms = 0644;
